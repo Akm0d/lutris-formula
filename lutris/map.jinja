@@ -1,0 +1,120 @@
+{% set oscodename = salt['grains.item']('oscodename').get('oscodename') %}
+
+{% set wine = salt['grains.filter_by']({
+    'default': {
+        'dependencies': [
+	    'winetricks',
+	    'wine'
+	],
+    },
+    'Arch': {
+	'dependencies': [
+	    'winetricks', 
+            'wine-staging', 
+	    'giflib', 
+	    'lib32-giflib',
+	    'libpng',
+	    'lib32-libpng',
+	    'libldap',
+	    'lib32-libldap',
+	    'gnutls',
+	    'lib32-gnutls',
+	    'mpg123',
+	    'lib32-mpg123',
+	    'openal',
+	    'lib32-openal',
+	    'v4l-utils',
+	    'lib32-v4l-utils',
+	    'libpulse',
+	    'lib32-libpulse',
+	    'alsa-plugins',
+	    'lib32-alsa-plugins',
+	    'alsa-lib',
+	    'lib32-alsa-lib',
+	    'libjpeg-turbo',
+	    'lib32-libjpeg-turbo',
+	    'libxcomposite',
+	    'lib32-libxcomposite',
+	    'libxinerama',
+	    'lib32-libxinerama',
+	    'ncurses',
+	    'lib32-ncurses',
+	    'opencl-icd-loader',
+	    'lib32-opencl-icd-loader',
+	    'libxslt',
+	    'lib32-libxslt',
+	    'libva',
+	    'lib32-libva',
+	    'gtk3',
+	    'lib32-gtk3',
+	    'gst-plugins-base-libs',
+	    'lib32-gst-plugins-base-libs',
+	    'vulkan-icd-loader',
+	    'lib32-vulkan-icd-loader',
+	    'cups',
+	    'samba',
+	    'dosbo',
+	],
+    },
+    'Debian': {
+	'dependencies': [
+	    'winetricks', 
+	    'winehq-staging',
+	],
+    },
+    'Solus': {
+	'dependencies': [
+	    'winetricks', 
+            'wine',
+            'wine-devel',
+            'wine-32bit-devel',
+	],
+    },
+}, 
+grain='os_family',
+default='default',
+)%}
+
+{% if grains.osfullname == 'Debian' %}
+{% do wine.update({
+    'gpgcheck': True,
+    'gpgkey': 'https://dl.winehq.org/wine-builds/winehq.key',
+    'repo': 'deb https://dl.winehq.org/wine-builds/debian/ {} main'.format(oscodename),
+})%}
+{% elif grains.osfullname == 'Ubuntu' %}
+{% do wine.update({
+    'gpgcheck': None,
+    'gpgkey': None,
+    'repo': 'deb https://dl.winehq.org/wine-builds/ubuntu/ {} main'.format(oscodename),
+})%}
+{% else %}
+{% do wine.update({
+    'gpgcheck': None,
+    'gpgkey': None,
+    'pkgrepo': None,
+})%}
+{% endif %}
+
+{% set lutris = salt['grains.filter_by']({
+    'default': {
+        'gpgcheck': None,
+        'gpgkey': None,
+        'repo': None,
+        'ppa': None,
+    },
+    'Debian': {
+        'gpgcheck': 1,
+        'gpgkey': 'https://download.opensuse.org/repositories/home:/strycore/Debian_9.0/Release.key',
+        'repo': 'deb http://download.opensuse.org/repositories/home:/strycore/Debian_9.0/ ./',
+	'ppa': 'lutris-team/lutris',
+	},
+},
+grain='os_family',
+default='default',
+)%}
+
+{% if grains.os == 'Debian' %}
+{% do lutris.update({'ppa':None}) %}
+{% else %}
+{% do lutris.update({'gpgcheck':None, 'gpgkey': None, 'name': None}) %}
+{% endif %}
