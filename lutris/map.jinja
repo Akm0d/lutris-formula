@@ -116,5 +116,5 @@ default='default',
 {% if grains.os == 'Debian' %}
 {% do lutris.update({'ppa':None}) %}
 {% else %}
-{% do lutris.update({'gpgcheck':None, 'gpgkey': None, 'name': None}) %}
+{% do lutris.update({'gpgcheck':None, 'gpgkey': None, 'repo': None}) %}
 {% endif %}
