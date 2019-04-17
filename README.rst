@@ -1,6 +1,6 @@
-===
+======
 lutris
-===
+======
 
 Formulas to set up and configure lutris
 
