@@ -3,10 +3,12 @@
 {%- from 'lutris/map.jinja' import wine with context %}
 
 wine:
+  {% if grains.os_family == 'Debian' %}
   pkgrepo.managed:
     - gpgcheck: {{ wine.gpgcheck }}
     - gpgkey: {{ wine.gpgkey }}
     - name: {{ wine.repo }}
+  {% endif %}
 
   pkg.installed:
     - refresh: True
