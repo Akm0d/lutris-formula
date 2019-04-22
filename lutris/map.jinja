@@ -96,12 +96,10 @@ default='default',
 {% endif %}
 
 {% set lutris = {
-    {
-        'gpgcheck': None,
-        'gpgkey': None,
-        'repo': None,
-        'ppa': None,
-    }
+    'gpgcheck': None,
+    'gpgkey': None,
+    'repo': None,
+    'ppa': None,
 }%}
 
 {% if grains.osfullname == 'Debian' %}
